@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voice Service Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { margin: 10px; padding: 10px; font-size: 16px; }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+    </style>
+</head>
+<body>
+    <h1>Voice Service Test</h1>
+    
+    <button onclick="testBasicSpeech()">1. Test Basic Speech</button>
+    <button onclick="testVoiceService()">2. Test Voice Service</button>
+    <button onclick="checkEnvironment()">3. Check Environment</button>
+    <button onclick="clearConsole()">Clear Console</button>
+    
+    <div id="output"></div>
+    
+    <script>
+        // Simple logger that shows messages on page
+        function log(message, type = 'info') {
+            console.log(message);
+            const output = document.getElementById('output');
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = new Date().toLocaleTimeString() + ' - ' + message;
+            output.appendChild(div);
+        }
+
+        function clearConsole() {
+            console.clear();
+            document.getElementById('output').innerHTML = '';
+        }
+
+        // Test 1: Basic speech synthesis (should work)
+        function testBasicSpeech() {
+            log('Testing basic speech synthesis...');
+            try {
+                const utterance = new SpeechSynthesisUtterance('Hello, this is a basic test');
+                utterance.onend = () => log('✅ Basic speech completed', 'success');
+                utterance.onerror = (e) => log(`❌ Basic speech error: ${e.error}`, 'error');
+                
+                window.speechSynthesis.speak(utterance);
+                log('Basic speech started successfully', 'success');
+            } catch (error) {
+                log(`❌ Basic speech failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Test 2: Check browser environment
+        function checkEnvironment() {
+            log('=== ENVIRONMENT CHECK ===');
+            
+            // Check secure context
+            const isSecure = window.location.protocol === 'https:' || 
+                           window.location.hostname === 'localhost' ||
+                           window.location.hostname === '127.0.0.1';
+            log(`Secure context: ${isSecure}`, isSecure ? 'success' : 'error');
+            
+            // Check speech synthesis support
+            const hasSynthesis = 'speechSynthesis' in window;
+            log(`Speech Synthesis supported: ${hasSynthesis}`, hasSynthesis ? 'success' : 'error');
+            
+            // Check voices
+            const voices = speechSynthesis.getVoices();
+            log(`Voices available: ${voices.length}`, voices.length > 0 ? 'success' : 'warning');
+            
+            if (voices.length > 0) {
+                voices.forEach(voice => {
+                    log(`Voice: ${voice.name} (${voice.lang})`, 'info');
+                });
+            }
+            
+            // Check user agent
+            log(`Browser: ${navigator.userAgent}`, 'info');
+            log(`Protocol: ${window.location.protocol}`, 'info');
+        }
+
+        // Test 3: Simplified Voice Service for testing
+        class SimpleVoiceService {
+            constructor() {
+                this.synthesis = window.speechSynthesis;
+                log('SimpleVoiceService created');
+            }
+
+            async speak(text) {
+                return new Promise((resolve, reject) => {
+                    log(`Trying to speak: "${text}"`);
+                    
+                    // Cancel any ongoing speech
+                    if (this.synthesis.speaking) {
+                        this.synthesis.cancel();
+                        log('Cancelled previous speech');
+                    }
+
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    
+                    utterance.onstart = () => {
+                        log('✅ Speech started', 'success');
+                    };
+
+                    utterance.onend = () => {
+                        log('✅ Speech ended', 'success');
+                        resolve();
+                    };
+
+                    utterance.onerror = (event) => {
+                        log(`❌ Speech error: ${event.error}`, 'error');
+                        reject(new Error(event.error));
+                    };
+
+                    // Try to speak
+                    try {
+                        this.synthesis.speak(utterance);
+                        log('speak() method called', 'success');
+                    } catch (error) {
+                        log(`❌ speak() failed: ${error.message}`, 'error');
+                        reject(error);
+                    }
+                });
+            }
+        }
+
+        // Test the simple voice service
+        async function testVoiceService() {
+            log('Testing SimpleVoiceService...');
+            const voiceService = new SimpleVoiceService();
+            
+            try {
+                await voiceService.speak('Hello from simple voice service');
+                log('✅ SimpleVoiceService test PASSED', 'success');
+            } catch (error) {
+                log(`❌ SimpleVoiceService test FAILED: ${error.message}`, 'error');
+            }
+        }
+
+        // Run initial environment check
+        setTimeout(checkEnvironment, 1000);
+    </script>
+</body>
+</html>
