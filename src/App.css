@@ -1,0 +1,159 @@
+@import "tailwindcss";
+/* Replace any @font-face declarations with this */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+/* Custom scrollbar for chat */
+.chat-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Smooth transitions for 3D scene */
+canvas {
+  transition: background 0.5s ease-in-out;
+}
+
+/* Backdrop blur support */
+@supports (backdrop-filter: blur(10px)) {
+  .backdrop-blur-sm {
+    backdrop-filter: blur(10px);
+  }
+}
+/* Add to your src/index.css */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 5px currentColor; }
+  50% { box-shadow: 0 0 20px currentColor; }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+.glow-animation {
+  animation: glow 2s ease-in-out infinite;
+}
+
+/* Smooth transitions for 3D scene */
+canvas {
+  transition: all 0.5s ease-in-out;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Typing animation */
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+/* Message fade-in */
+@keyframes messageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message-item {
+  animation: messageFadeIn 0.3s ease-out;
+}
+
+/* Smooth transitions */
+.chat-message {
+  transition: all 0.2s ease-in-out;
+}
+
+.chat-message:hover {
+  transform: translateX(2px);
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.app-header,
+.app-footer {
+  flex: 0 0 auto;
+  padding: 0.5rem 1rem;
+  background: var(--header-bg, #222);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-main {
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.app-layout {
+  display: flex;
+  height: 100%;
+}
+
+.scene-container {
+  flex: 1; /* take space */
+  background: black;
+}
+
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #333;
+}
